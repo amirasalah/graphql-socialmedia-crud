@@ -8,7 +8,7 @@ const server = new ApolloServer({
     typeDefs,
     resolvers,
 })
-
+//mongoDbURL = mongodb+srv://yasmaAdmin:ssA19Jh51LWqJAR7@cluster0.5qoel.mongodb.net/yasma?retryWrites=true&w=majority
 mongoose
     .connect(process.env.mongoDbURL, {
         useNewUrlParser: true,
