@@ -1,3 +1,4 @@
+const { AuthenticationError } = require('apollo-server')
 const post = require('../../src/models/Post')
 const checkAuth = require('../../utils/check_util')
 
@@ -36,6 +37,25 @@ module.exports = {
                 })
                 const resPost = await newPost.save()
                 return resPost
+            }
+        },
+        deletePost: async (_, { postId }, context) => {
+            const user = checkAuth(context)
+            if (user) {
+                try {
+                    const deletedPost = await post.findById(postId)
+                    console.log(user.id, deletedPost.user)
+                    if (user.id == deletedPost.user) {
+                        await deletedPost.delete()
+                        return 'Post deleted successfully'
+                    } else {
+                        throw new AuthenticationError(
+                            "The post doesn't belong to the logged in user",
+                        )
+                    }
+                } catch (error) {
+                    throw new Error(error)
+                }
             }
         },
     },
