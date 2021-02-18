@@ -2,18 +2,32 @@ const { ApolloServer } = require('apollo-server')
 const gql = require('graphql-tag')
 const mongoose = require('mongoose')
 
-const mongoDbURL =
-    'mongodb+srv://yasmaAdmin:ssA19Jh51LWqJAR7@cluster0.5qoel.mongodb.net/<dbname>?retryWrites=true&w=majority'
+const post = require('./src/models/Post')
 
-//
+const mongoDbURL =
+    'mongodb+srv://yasmaAdmin:ssA19Jh51LWqJAR7@cluster0.5qoel.mongodb.net/yasma?retryWrites=true&w=majority'
+
 const typeDefs = gql`
+    type Post {
+        id: ID!
+        body: String!
+        createdAt: String
+        username: String
+    }
     type Query {
-        sayHi: String!
+        getPosts: [Post]
     }
 `
 const resolvers = {
     Query: {
-        sayHi: () => 'Hello World!',
+        getPosts: async () => {
+            try {
+                const posts = await post.find()
+                return posts
+            } catch (error) {
+                throw new Error(error)
+            }
+        },
     },
 }
 const server = new ApolloServer({
