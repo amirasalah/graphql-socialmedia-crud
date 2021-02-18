@@ -14,7 +14,7 @@ const generateToken = user => {
             email: user.email,
             username: user.username,
         },
-        SECRET_KEY,
+        process.env.SECRET_KEY,
         { expiresIn: '1h' },
     )
 }
@@ -38,11 +38,16 @@ module.exports = {
                 errors.general = 'Wrong credentials'
                 throw new UserInputError('Wrong credentials', { errors })
             }
-            const token = generateToken(res)
+            const token = generateToken(user)
+            return {
+                ...user._doc,
+                id: user._id,
+                token,
+            }
         },
         async register(
             _,
-            { registerInput: { username, email, password, confirmPassword } },
+            { registerInput: { username, password, confirmPassword, email } },
         ) {
             //TODO: Validate User data
             const { valid, errors } = validateRegisterInput(
@@ -53,7 +58,8 @@ module.exports = {
             )
             if (!valid) throw new UserInputError(`Errors`, { errors })
             //TODO: Make sure user doesn't already exist
-            const currentUser = User.findOne({ email })
+            const currentUser = await User.findOne({ email })
+            console.log(currentUser)
             if (currentUser) {
                 throw new UserInputError('User already exists', {
                     errors: {
