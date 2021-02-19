@@ -29,7 +29,21 @@ module.exports = {
                 throw new UserInputError('Post not found')
             }
         },
-        deleteComment: async (_, { postId, commentId }, context) => {},
+        deleteComment: async (_, { postId, commentId }, context) => {
+            const user = checkAuth(context)
+            if (user) {
+                const mainPost = await post.findById(postId)
+                if (mainPost) {
+                    await mainPost.comments.id(commentId).remove()
+                    await mainPost.save()
+                    return mainPost
+                } else {
+                    throw new UserInputError('Comment Does not Exist')
+                }
+            } else {
+                throw new UserInputError('User does not exist')
+            }
+        },
         likePost: async (_, { postId }, context) => {},
     },
 }
