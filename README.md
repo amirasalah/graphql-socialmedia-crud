@@ -3,7 +3,7 @@
 
 ## What is this?
 
-There are a set of Crud operations using GraphQl and Apollo server to be used in social media Apps
+A set of Crud operations using GraphQl and Apollo server to be used in social media Apps
 
 ## functionalities Included:
 
