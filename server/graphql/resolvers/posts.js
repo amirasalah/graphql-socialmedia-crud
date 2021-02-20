@@ -44,7 +44,6 @@ module.exports = {
             if (user) {
                 try {
                     const deletedPost = await post.findById(postId)
-                    console.log(user.id, deletedPost.user)
                     if (user.id == deletedPost.user) {
                         await deletedPost.delete()
                         return 'Post deleted successfully'
