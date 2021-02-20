@@ -20,7 +20,7 @@ module.exports = {
                 updatedPost.comments.unshift({
                     body,
                     username: user.username,
-                    userId: user.id,
+                    user: user.id,
                     createdAt: new Date().toISOString(),
                 })
                 await updatedPost.save()
@@ -46,18 +46,20 @@ module.exports = {
         },
         likePost: async (_, { postId }, context) => {
             const user = checkAuth(context)
+
             if (user) {
                 const mainPost = await post.findById(postId)
                 if (mainPost) {
-                    if (mainPost.likes.find(l => l.userId == user.id)) {
+                    if (mainPost.likes.find(like => like._id === user.id)) {
                         mainPost.likes = mainPost.likes.filter(
-                            l => l.userId != user.id,
+                            like => like._id !== user.id,
                         )
                     } else {
+                        console.log(user.id)
                         mainPost.likes.push({
                             createdAt: new Date().toISOString(),
                             username: user.username,
-                            userId: user.id,
+                            user: user.id,
                         })
                     }
                     await mainPost.save()
